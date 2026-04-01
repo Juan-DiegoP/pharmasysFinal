@@ -1,0 +1,6 @@
+mysql-connector-python
+pillow
+tkcalendar
+openpyxl
+reportlab
+tabulate 
