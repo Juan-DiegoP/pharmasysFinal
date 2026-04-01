@@ -7,10 +7,7 @@ class ClienteController(BaseController):
         self.model = ClienteModel(db)
 
     def insertar(self, values):
-        if not self.validar_vacios(values):
-            return "Campos vacíos"
-        self.model.insertar(values)
-        return "ok"
+        return self.model.insertar(values)
 
     def buscar(self, codigo):
         if not codigo:

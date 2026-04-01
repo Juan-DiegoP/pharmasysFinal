@@ -7,10 +7,7 @@ class MedicamentoController(BaseController):
         self.model = MedicamentoModel(db)
 
     def insertar(self, values):
-        if not self.validar_vacios(values):
-            return "Campos vacíos"
-        self.model.insertar(values)
-        return "ok"
+        return self.model.insertar(values)
 
     def buscar(self, codigo):
         if not codigo:
@@ -27,6 +24,4 @@ class MedicamentoController(BaseController):
         return self.model.listar()
     
     def actualizar(self, values):
-        if not self.validar(values): return "Campos vacios"
-        self.model.actualizar(values)
-        return "ok"
+        return self.model.actualizar(values)

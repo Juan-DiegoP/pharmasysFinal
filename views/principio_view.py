@@ -77,65 +77,105 @@ class PrincipioView:
 
     def seleccionar_fila(self, event):
         item = self.tree.selection()
+
         if item:
             valores = self.tree.item(item)["values"]
+
             for i, key in enumerate(self.entries):
+                self.entries[key].config(state="normal")  # 🔓 activar todo
                 self.entries[key].delete(0, tk.END)
                 self.entries[key].insert(0, valores[i])
 
-    def insertar(self):
-        codigo = self.entries['codigo'].get()
+            # 🔒 SOLO bloquear código
+            self.entries['codigo'].config(state="disabled")
 
+    def insertar(self):
+        valores = [e.get() for e in self.entries.values()]
+        
+        if any(v.strip() == "" for v in valores):
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+        
+        codigo = self.entries['codigo'].get()
         if not solo_numeros(codigo):
-            messagebox.showerror("Error", "Código debe ser numérico")
+            messagebox.showerror("Error", "El código debe ser numérico")
             return
 
-        v = [e.get() for e in self.entries.values()]
-        r = self.controller.insertar(v)
+        r = self.controller.insertar(valores)
 
-        messagebox.showinfo("Resultado", "Insertado" if r == "ok" else r)
+        messagebox.showinfo("Resultado", "Insertado correctamente")
         self.listar()
 
     def buscar(self):
-        r = self.controller.buscar(self.entries['codigo'].get())
+        codigo = self.entries['codigo'].get()
+
+        if not codigo:
+            messagebox.showerror("Error", "Ingrese código")
+            return
+
+        r = self.controller.buscar(codigo)
+
         if isinstance(r, str):
-            messagebox.showwarning("Error", r)
+            messagebox.showerror("Error", r)
         elif r:
             self.mostrar_tabla(r)
 
     def actualizar(self):
-        v = [e.get() for e in self.entries.values()]
-        r = self.controller.actualizar(v)
-        messagebox.showinfo("Resultado", "Actualizado" if r == "ok" else r)
+        valores = [e.get() for e in self.entries.values()]
+
+        if any(v.strip() == "" for v in valores):
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+        
+        r = self.controller.actualizar(valores)
+
+        messagebox.showinfo("Resultado", "Actualizado correctamente")
+        self.listar()
 
     def eliminar(self):
+        codigo = self.entries['codigo'].get()
+
+        if not codigo:
+            messagebox.showerror("Error", "Ingrese código")
+            return
+        
         if not messagebox.askyesno("Confirmar", "¿Eliminar registro?"):
             return
 
-        r = self.controller.eliminar(self.entries['codigo'].get())
-        messagebox.showinfo("Resultado", "Eliminado" if r == "ok" else r)
+        r = self.controller.eliminar(codigo)
+
+        messagebox.showinfo("Resultado", "Eliminado correctamente")
         self.listar()
 
     def listar(self):
         r = self.controller.listar()
+
         if r:
             self.mostrar_tabla(r)
 
     def limpiar(self):
         for e in self.entries.values():
+            e.config(state="normal")  # 🔓 activar todo
+
             if isinstance(e, ttk.Combobox):
                 e.set("")
             else:
                 e.delete(0, tk.END)
 
     def exportar_excel(self):
+
         res = self.controller.listar()
+
         if res:
             headers, rows = res[0]
-            exportar_excel(headers, rows, "principios.xlsx")
+            exportar_excel(headers, rows, "medicamentos.xlsx")
+            messagebox.showinfo("Ok", "Exportado a medicamentos.xlsx")
 
     def exportar_pdf(self):
+
         res = self.controller.listar()
+
         if res:
             headers, rows = res[0]
-            exportar_pdf(headers, rows, "principios.pdf")
+            exportar_pdf(headers, rows, "medicamentos.pdf")
+            messagebox.showinfo("Ok", "Exportado a medicamentos.pdf")

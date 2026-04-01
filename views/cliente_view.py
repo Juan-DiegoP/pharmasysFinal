@@ -7,6 +7,8 @@ from utils.validators import validar_email, solo_numeros
 from tkcalendar import DateEntry
 from PIL import Image, ImageTk
 import os
+import shutil, os
+
 
 class ClienteView:
 
@@ -48,8 +50,12 @@ class ClienteView:
         # 🖼 IMAGEN
         ttk.Label(left_frame, text="Imagen").grid(row=7, column=0, pady=5)
 
-        self.lbl_imagen = tk.Label(left_frame, text="Sin imagen", width=25, height=10, relief="solid")
-        self.lbl_imagen.grid(row=7, column=1, pady=5)
+        img_frame = tk.Frame(left_frame, width=150, height=150, relief="solid", bd=1)
+        img_frame.grid(row=7, column=1, pady=5)
+        img_frame.pack_propagate(False)
+
+        self.lbl_imagen = ttk.Label(img_frame, text="Sin imagen", anchor="center")
+        self.lbl_imagen.pack(fill="both", expand=True)
 
         btn_img = ttk.Frame(left_frame)
         btn_img.grid(row=8, column=1)
@@ -97,7 +103,7 @@ class ClienteView:
             self.ruta_imagen = ruta
 
             img = Image.open(ruta)
-            img = img.resize((120,120))
+            img = img.resize((150,150), Image.LANCZOS)
             self.img_tk = ImageTk.PhotoImage(img)
 
             self.lbl_imagen.config(image=self.img_tk, text="")
@@ -129,72 +135,136 @@ class ClienteView:
         item = self.tree.selection()
         if item:
             valores = self.tree.item(item)["values"]
-
             for i, key in enumerate(self.entries):
+                self.entries[key].config(state="normal")
                 self.entries[key].delete(0, tk.END)
                 self.entries[key].insert(0, valores[i])
+            self.entries['codigo'].config(state="disabled")
 
-    # =========================
-    # CRUD
-    # =========================
+            # Cargar imagen
+            nombre_imagen = valores[-1]  # último campo
+            if nombre_imagen and os.path.exists(f"assets/{nombre_imagen}"):
+                img = Image.open(f"assets/{nombre_imagen}")
+                img = img.resize((150, 150), Image.LANCZOS)
+                self.img_tk = ImageTk.PhotoImage(img)
+                self.lbl_imagen.config(image=self.img_tk, text="")
+            else:
+                self.limpiar_imagen()
+
+            # 🔒 SOLO bloquear código
+            self.entries['codigo'].config(state="disabled")
 
     def insertar(self):
-        codigo = self.entries['codigo'].get()
-        correo = self.entries['correo'].get()
-
-        if not solo_numeros(codigo):
-            messagebox.showerror("Error", "Código debe ser numérico")
-            return
-
-        if not validar_email(correo):
-            messagebox.showerror("Error", "Correo inválido")
-            return
-
         valores = [e.get() for e in self.entries.values()]
 
+        # Validaciones PRIMERO
+        if any(v.strip() == "" for v in valores):
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+    
+        codigo = self.entries['codigo'].get()
+        if not solo_numeros(codigo):
+            messagebox.showerror("Error", "El código debe ser numérico")
+            return
+
+        # Imagen
+        nombre_imagen = ""
+        if self.ruta_imagen:
+            os.makedirs("assets", exist_ok=True)
+            nombre_imagen = os.path.basename(self.ruta_imagen)
+            shutil.copy(self.ruta_imagen, f"assets/{nombre_imagen}")
+
+        valores.append(nombre_imagen)
+
+        # Insert UNA sola vez
         r = self.controller.insertar(valores)
 
-        messagebox.showinfo("Resultado", "Insertado" if r == "ok" else r)
-        self.listar()
+        if r is not None:
+            messagebox.showinfo("Resultado", "Insertado correctamente")
+            self.listar()
+            self.limpiar()
 
     def buscar(self):
-        r = self.controller.buscar(self.entries['codigo'].get())
-        if r:
+        codigo = self.entries['codigo'].get()
+
+        if not codigo:
+            messagebox.showerror("Error", "Ingrese código")
+            return
+
+        r = self.controller.buscar(codigo)
+
+        if isinstance(r, str):
+            messagebox.showerror("Error", r)
+        elif r:
             self.mostrar_tabla(r)
 
     def actualizar(self):
         valores = [e.get() for e in self.entries.values()]
 
+        nombre_imagen = ""
+        if self.ruta_imagen:
+            os.makedirs("assets", exist_ok=True)
+            nombre_imagen = os.path.basename(self.ruta_imagen)
+            shutil.copy(self.ruta_imagen, f"assets/{nombre_imagen}") 
+
+        valores.append(nombre_imagen)
+        r = self.controller.insertar(valores)
+        messagebox.showinfo("Resultado", "Insertado correctamente")
+        self.listar()
+
+        if any(v.strip() == "" for v in valores):
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+        
         r = self.controller.actualizar(valores)
-        messagebox.showinfo("Resultado", "Actualizado")
+
+        messagebox.showinfo("Resultado", "Actualizado correctamente")
+        self.listar()
 
     def eliminar(self):
-        if not messagebox.askyesno("Confirmar", "¿Eliminar?"):
+        codigo = self.entries['codigo'].get()
+
+        if not codigo:
+            messagebox.showerror("Error", "Ingrese código")
+            return
+        
+        if not messagebox.askyesno("Confirmar", "¿Eliminar registro?"):
             return
 
-        r = self.controller.eliminar(self.entries['codigo'].get())
-        messagebox.showinfo("Resultado", "Eliminado")
+        r = self.controller.eliminar(codigo)
+
+        messagebox.showinfo("Resultado", "Eliminado correctamente")
         self.listar()
 
     def listar(self):
         r = self.controller.listar()
+
         if r:
             self.mostrar_tabla(r)
 
     def limpiar(self):
         for e in self.entries.values():
-            e.delete(0, tk.END)
+            e.config(state="normal")  # 🔓 activar todo
 
-        self.limpiar_imagen()
+            if isinstance(e, ttk.Combobox):
+                e.set("")
+            else:
+                e.delete(0, tk.END)
 
     def exportar_excel(self):
+
         res = self.controller.listar()
+
         if res:
             headers, rows = res[0]
-            exportar_excel(headers, rows, "clientes.xlsx")
+            exportar_excel(headers, rows, "medicamentos.xlsx")
+            messagebox.showinfo("Ok", "Exportado a medicamentos.xlsx")
 
     def exportar_pdf(self):
+
         res = self.controller.listar()
+
         if res:
             headers, rows = res[0]
-            exportar_pdf(headers, rows, "clientes.pdf")
+            exportar_pdf(headers, rows, "medicamentos.pdf")
+            messagebox.showinfo("Ok", "Exportado a medicamentos.pdf")
