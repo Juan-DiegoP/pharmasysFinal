@@ -1,21 +1,32 @@
 ## Sistema de gestión para industria farmacéutica "pharmasys"
 
-El laboratorio farmacéutico "Medicamentos Confiables S.A." necesita administrar sus procesos de investigación, producción y distribución. Cada principio activo se registra con código único, nombre científico, fórmula química, clasificación terapéutica, propiedades, origen (sintético, natural, semisintético), método de obtención, precauciones de manipulación y proveedores homologados.
+El laboratorio farmacéutico "Medicamentos Confiables S.A." necesita administrar sus procesos de investigación, producción y distribución. 
+Cada principio activo se registra con código único, nombre científico, fórmula química, clasificación terapéutica, propiedades, origen (sintético, natural, semisintético),
+método de obtención, precauciones de manipulación y proveedores homologados.
 
-Los medicamentos tienen código, nombre comercial, principios activos y concentraciones, forma farmacéutica (tableta, cápsula, jarabe), presentación, indicaciones principales, contraindicaciones, efectos secundarios, posología recomendada, registro sanitario, fecha de aprobación y precio sugerido.
+Los medicamentos tienen código, nombre comercial, principios activos y concentraciones, forma farmacéutica (tableta, cápsula, jarabe), presentación, indicaciones principales,
+ contraindicaciones, efectos secundarios, posología recomendada, registro sanitario, fecha de aprobación y precio sugerido.
 
-Las materias primas incluyen código interno, nombre, tipo, especificaciones técnicas, certificado de análisis requerido, condiciones de almacenamiento, periodo de cuarentena, fecha de caducidad y categoría de riesgo.
+Las materias primas incluyen código interno, nombre, tipo, especificaciones técnicas, certificado de análisis requerido, condiciones de almacenamiento, periodo de cuarentena,
+ fecha de caducidad y categoría de riesgo.
 
-Los lotes de producción documentan número único, medicamento, fecha de fabricación, cantidad producida, materias primas utilizadas con sus lotes, personal responsable, equipos utilizados, parámetros de proceso, pruebas realizadas y fecha de caducidad asignada.
+Los lotes de producción documentan número único, medicamento, fecha de fabricación, cantidad producida, materias primas utilizadas con sus lotes, personal responsable,
+equipos utilizados, parámetros de proceso, pruebas realizadas y fecha de caducidad asignada.
 
-El control de calidad registra código de análisis, lote evaluado, fecha, tipo de prueba (física, química, microbiológica), especificaciones, resultados obtenidos, analista responsable, equipos utilizados, conformidad y certificado emitido.
+El control de calidad registra código de análisis, lote evaluado, fecha, tipo de prueba (física, química, microbiológica), especificaciones, resultados obtenidos,
+analista responsable, equipos utilizados, conformidad y certificado emitido.
 
-Los protocolos de fabricación incluyen código, medicamento, versión, descripción detallada de etapas, parámetros críticos de proceso, puntos de control, equipamiento necesario, condiciones ambientales requeridas y validación.
+Los protocolos de fabricación incluyen código, medicamento, versión, descripción detallada de etapas, parámetros críticos de proceso, puntos de control, 
+equipamiento necesario, condiciones ambientales requeridas y validación.
 
-Los equipos de laboratorio y producción se identifican con número de serie, tipo, marca, modelo, ubicación, calibración requerida, fecha de última calibración, mantenimientos programados, cualificación (IQ, OQ, PQ) y estado operativo.
+Los equipos de laboratorio y producción se identifican con número de serie, tipo, marca, modelo, ubicación, calibración requerida, fecha de última calibración, 
+mantenimientos programados, cualificación (IQ, OQ, PQ) y estado operativo.
 
-Los estudios de estabilidad documentan código, medicamento, lotes incluidos, condiciones de almacenamiento (temperatura, humedad), periodos de análisis, parámetros evaluados, resultados por periodo y conclusiones sobre vida útil.
+Los estudios de estabilidad documentan código, medicamento, lotes incluidos, condiciones de almacenamiento (temperatura, humedad), periodos de análisis, 
+parámetros evaluados, resultados por periodo y conclusiones sobre vida útil.
 
-Los clientes mayoristas incluyen código, razón social, licencia sanitaria, dirección, teléfono, correo electrónico, persona de contacto, condiciones de almacenamiento verificadas, condiciones comerciales y calificación.
+Los clientes mayoristas incluyen código, razón social, licencia sanitaria, dirección, teléfono, correo electrónico, persona de contacto, 
+condiciones de almacenamiento verificadas, condiciones comerciales y calificación.
 
-La trazabilidad registra cada movimiento del medicamento con lote, fecha, tipo de operación (fabricación, análisis, liberación, almacenamiento, distribución), ubicación, responsable y documentación asociada.
+La trazabilidad registra cada movimiento del medicamento con lote, fecha, tipo de operación (fabricación, análisis, liberación, almacenamiento, distribución), 
+ubicación, responsable y documentación asociada.
