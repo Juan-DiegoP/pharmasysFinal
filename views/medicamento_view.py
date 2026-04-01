@@ -11,27 +11,19 @@ class MedicamentoView:
 
         self.controller = MedicamentoController(db)
 
-        # =========================
         # CONTENEDOR PRINCIPAL
-        # =========================
         main_frame = ttk.Frame(root)
         main_frame.pack(fill="both", expand=True)
 
-        # =========================
         # IZQUIERDA (FORMULARIO)
-        # =========================
         left_frame = ttk.Frame(main_frame, padding=20)
         left_frame.pack(side="left", fill="y")
 
-        # =========================
         # DERECHA (TABLA)
-        # =========================
         right_frame = ttk.Frame(main_frame)
         right_frame.pack(side="right", fill="both", expand=True)
 
-        # =========================
         # CAMPOS
-        # =========================
         fields = ['codigo','nombre_comercial','forma','presentacion','indicaciones','precio']
         self.entries = {}
 
@@ -52,9 +44,7 @@ class MedicamentoView:
             entry.grid(row=i, column=1, pady=5)
             self.entries[field] = entry
 
-        # =========================
         # BOTONES
-        # =========================
         btn = ttk.Frame(left_frame)
         btn.grid(row=len(fields), column=0, columnspan=2, pady=15)
 
@@ -67,9 +57,7 @@ class MedicamentoView:
         tk.Button(btn, text="Excel", command=self.exportar_excel).pack(side=tk.LEFT, padx=3)
         tk.Button(btn, text="PDF", command=self.exportar_pdf).pack(side=tk.LEFT, padx=3)
 
-        # =========================
         # TABLA (TREEVIEW)
-        # =========================
         self.tree = ttk.Treeview(right_frame)
 
         scroll_y = ttk.Scrollbar(right_frame, orient="vertical", command=self.tree.yview)
@@ -84,9 +72,7 @@ class MedicamentoView:
         # CLICK EN TABLA
         self.tree.bind("<<TreeviewSelect>>", self.seleccionar_fila)
 
-    # =========================
     # FUNCIONES
-    # =========================
 
     def mostrar_tabla(self, results):
 
